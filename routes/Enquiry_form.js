@@ -1,0 +1,21 @@
+const express = require("express")
+const router = express.Router()
+const EnqueryFormControler = require('../controllers/Enquery_Form')
+const verify = require("../middleware/JWT")
+const imgUpload = require('../middleware/ImmgUpload')
+
+router.post('/updateOrder', verify.validateToken, EnqueryFormControler.orderStatus)
+router.post('/getOrder', verify.validateToken, EnqueryFormControler.getAllOrder)
+router.post('/get', verify.validateToken, EnqueryFormControler.getEnqForm)
+router.post('/post', verify.validateToken, EnqueryFormControler.addEnqForm)
+router.post('/update', verify.validateToken, EnqueryFormControler.updateEnqForm)
+router.post('/delete', verify.validateToken, EnqueryFormControler.deleteEnqForm)
+router.post('/find_client', verify.validateToken, EnqueryFormControler.find_client)
+router.post('/document', imgUpload.upload.single('document'), EnqueryFormControler.uploadeDocument)
+router.post('/change-status', verify.validateToken, EnqueryFormControler.updateOrderStatus)
+router.post('/invested-locations', verify.validateToken, EnqueryFormControler.investedLocations)
+router.post('/invoice-email', verify.validateToken, EnqueryFormControler.invoiceEmail)
+router.post('/create-certificate', verify.validateToken, EnqueryFormControler.createunitcertificate)
+router.post('/get-transaction', verify.validateToken, EnqueryFormControler.getTransaction)
+
+module.exports = router
