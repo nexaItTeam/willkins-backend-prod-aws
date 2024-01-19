@@ -15,7 +15,7 @@ let sequelize;
 sequelize = new Sequelize({
     database: "nexa_capital",
     username: "wellkins_capital",
-    host: "wellkins-mysql-prod.mysql.database.azure.com",
+    host: "52.23.138.253",
     dialect: "mysql",
     port: "3306",
     password: "J8#p$R5mY@9Q",

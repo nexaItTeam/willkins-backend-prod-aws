@@ -326,7 +326,8 @@ exports.addEnqForm = async (req, res) => {
                                 "units_acquired": resp.investment_unit,
                                 "units_transferred": 0,
                                 "units_balance": resp.investment_unit,
-                                "transaction_status": enq_form.transaction_status
+                                "transaction_status": enq_form.transaction_status,
+                                "holder_type": "self",
                             }
                             await Transaction.create(temp).then(() => {
                                 return res.status(200).json({
