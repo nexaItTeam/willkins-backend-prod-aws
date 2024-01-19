@@ -313,7 +313,8 @@ exports.addEnqForm = async (req, res) => {
                             prop_id: enq_form.prop_id,
                             paidStatus: enq_form.paidStatus,
                             investing_amount: enq_form.investing_amount,
-                            paidStatus: enq_form.paidStatus
+                            paidStatus: enq_form.paidStatus,
+                            holder_type: "self",
                         }
                         await Order.create(temp).then(async (resp) => {
                             var temp = {
@@ -327,7 +328,7 @@ exports.addEnqForm = async (req, res) => {
                                 "units_transferred": 0,
                                 "units_balance": resp.investment_unit,
                                 "transaction_status": enq_form.transaction_status,
-                                "holder_type": "self",
+                               
                             }
                             await Transaction.create(temp).then(() => {
                                 return res.status(200).json({
