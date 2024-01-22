@@ -238,7 +238,7 @@ exports.addPropImg = async (req, res) => {
     try {
         const id = parseInt(req.params.id)
         const file = req.file
-        await azureUpload(file,null).then(async (resp) => {
+        await azureUpload(file, null).then(async (resp) => {
             var temp = {
                 "prop_id": id,
                 "property_img": `property/${file.originalname}`,
@@ -290,7 +290,7 @@ exports.uploadepds = async (req, res) => {
     try {
         const id = parseInt(req.params.id)
         const file = req.file
-      
+
         // await azureUpload(file).then(async (resp) => {
         //     var pds = await db.sequelize.query(`UPDATE property SET brocher='${file.originalname}' WHERE id = ${id};`)
         //     res.status(200).json({
@@ -383,3 +383,26 @@ exports.uploadesfsg = async (req, res) => {
     }
 }
 
+
+exports.total_investment = async (req, res) => {
+    try {
+        const totalInvestment = await db.sequelize.query(`SELECT sum(investing_amount) as total_investment  FROM nexa_capital.order where prop_id= ${req.body.prop_id};`)
+        if (totalInvestment) {
+            res.status(200).json({
+                message: "Success upload",
+                totalInvestment : totalInvestment[0]
+            })
+        }else{
+            res.status(400).json({
+                message: "Failed to get Data",
+                
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
