@@ -387,7 +387,7 @@ exports.uploadesfsg = async (req, res) => {
 
 exports.total_investment = async (req, res) => {
     try {
-        const totalInvestment = await db.sequelize.query(`SELECT sum(investing_amount) as total_investment  FROM nexa_capital.order where prop_id= ${req.body.prop_id};`)
+        const totalInvestment = await db.sequelize.query(`SELECT sum(investing_amount) as total_investment  FROM nexa_capital.order where prop_id= ${req.body.prop_id} and paidStatus != 3 and paidStatus !=0 and holder_type='self'; `)
         if (totalInvestment) {
             res.status(200).json({
                 message: "Success upload",
