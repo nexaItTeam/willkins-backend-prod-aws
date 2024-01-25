@@ -82,10 +82,6 @@ module.exports = (sequelize, DataTypes) => {
         transaction_status: {
             type: DataTypes.STRING,
             field: 'transaction_status',
-        },
-        createdAt:{
-            type: DataTypes.DATE,
-            field: 'createdAt'
         }
     }, {
         sequelize,

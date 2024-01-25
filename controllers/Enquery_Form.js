@@ -276,7 +276,7 @@ exports.addEnqForm = async (req, res) => {
                                             "units_transferred": 0,
                                             "units_balance": data.investment_unit,
                                             "transaction_status": enq_form.transaction_status,
-                                            "createdAt": enq_form.createdAt
+            
                                         }
                                         transaction.push(temp)
                                     })
@@ -329,7 +329,7 @@ exports.addEnqForm = async (req, res) => {
                                 "units_transferred": 0,
                                 "units_balance": resp.investment_unit,
                                 "transaction_status": enq_form.transaction_status,
-                                "createdAt": enq_form.createdAt
+
                             }
                             await Transaction.create(temp).then(() => {
                                 return res.status(200).json({
@@ -557,7 +557,7 @@ exports.updateEnqForm = async (req, res) => {
                                     "units_transferred": 0,
                                     "units_balance": data.investment_unit,
                                     "transaction_status": enq_form.transaction_status,
-                                    "createdAt": enq_form.createdAt
+    
                                 }
                                 transaction.push(temp)
                             })
@@ -608,8 +608,7 @@ exports.updateEnqForm = async (req, res) => {
                         "units_acquired": resp.investment_unit,
                         "units_transferred": 0,
                         "units_balance": resp.investment_unit,
-                        "transaction_status": enq_form.transaction_status,
-                        "createdAt": enq_form.createdAt
+                        "transaction_status": enq_form.transaction_status
                     }
                     await Transaction.create(temp).then(() => {
                         return res.status(200).json({
@@ -745,6 +744,7 @@ exports.updateOrderStatus = async (req, res) => {
             updateStatus, traansaction
         })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             message: "Server Error",
             error
