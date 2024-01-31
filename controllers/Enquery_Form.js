@@ -276,7 +276,7 @@ exports.addEnqForm = async (req, res) => {
                                             "units_transferred": 0,
                                             "units_balance": data.investment_unit,
                                             "transaction_status": enq_form.transaction_status,
-            
+
                                         }
                                         transaction.push(temp)
                                     })
@@ -429,16 +429,18 @@ const getOrder = async (id) => {
 exports.updateEnqForm = async (req, res) => {
     try {
         const { enq_form } = req.body
-        var update_form = await Enquiry_form.update(
-            enq_form,
-            {
-                where: {
-                    client_id: enq_form.client_id,
-                    id: enq_form.id,
-                    investor_form_type: enq_form.investor_form_type
-                }
-            }
-        )
+        // var update_form = await Enquiry_form.update(
+        //     enq_form,
+        //     {
+        //         where: {
+        //             client_id: enq_form.client_id,
+        //             id: enq_form.id,
+        //             investor_form_type: enq_form.investor_form_type
+        //         }
+        //     }
+        // )
+
+        var update_form = await Enquiry_form.create(enq_form)
         if (enq_form.isDraft != true) {
             if (enq_form.investor_form_type === "Individual") {
                 console.log("2")
@@ -480,29 +482,29 @@ exports.updateEnqForm = async (req, res) => {
                             useLetters: false
                         })
                         resp.forEach(data => {
-                           
-                           
+
+
                             var temp = {
                                 investment_unit: enq_form.investment_unit,
                                 client_id: data.id,
                                 order_id: enq_form.prop_id + order_id1,
                                 holder_type: "joint",
-                                enq_form_id: enq_form.id || enq_resp.id,
+                                enq_form_id: enq_form.id || update_form.id,
                                 prop_id: enq_form.prop_id,
                                 paidStatus: enq_form.paidStatus,
                                 investing_amount: enq_form.investing_amount,
                                 paidStatus: enq_form.paidStatus
                             }
                             order_payload.push(temp)
-                            console.log("temp",order_payload)
+                            console.log("temp", order_payload)
                         })
-                       
+
                         const main_holder = {
                             investment_unit: enq_form.investment_unit,
                             client_id: enq_form.client_id,
                             holder_type: "self",
                             order_id: enq_form.prop_id + order_id1,
-                            enq_form_id: enq_form.id || enq_resp.id,
+                            enq_form_id: enq_form.id || update_form.id,
                             prop_id: enq_form.prop_id,
                             paidStatus: enq_form.paidStatus,
                             investing_amount: enq_form.investing_amount,
@@ -529,7 +531,7 @@ exports.updateEnqForm = async (req, res) => {
                                     client_id: client.id,
                                     holder_type: "joint",
                                     order_id: enq_form.prop_id + order_id1,
-                                    enq_form_id: enq_form.id || enq_resp.id,
+                                    enq_form_id: enq_form.id || update_form.id,
                                     prop_id: enq_form.prop_id,
                                     paidStatus: enq_form.paidStatus,
                                     investing_amount: enq_form.investing_amount,
@@ -540,7 +542,7 @@ exports.updateEnqForm = async (req, res) => {
                             }
                         }
                         // order create
-                        console.log("xxxx",order_payload)
+                        console.log("xxxx", order_payload)
                         await Order.bulkCreate(order_payload).then(async (resp) => {
                             console.log("4", resp)
                             // create transaction
@@ -557,7 +559,7 @@ exports.updateEnqForm = async (req, res) => {
                                     "units_transferred": 0,
                                     "units_balance": data.investment_unit,
                                     "transaction_status": enq_form.transaction_status,
-    
+
                                 }
                                 transaction.push(temp)
                             })
@@ -591,7 +593,7 @@ exports.updateEnqForm = async (req, res) => {
                     investment_unit: enq_form.investment_unit,
                     client_id: enq_form.client_id,
                     order_id: enq_form.prop_id + order_id,
-                    enq_form_id: enq_form.id || enq_resp.id,
+                    enq_form_id: enq_form.id || update_form.id,
                     prop_id: enq_form.prop_id,
                     paidStatus: enq_form.paidStatus,
                     investing_amount: enq_form.investing_amount,
@@ -677,7 +679,7 @@ exports.uploadeDocument = async (req, res) => {
         const docs_type = req.body.docs_type
         const file = req.file
         console.log("file", file, id, docs_type)
-        await azureUpload(file,id).then(async (_) => {
+        await azureUpload(file, id).then(async (_) => {
             var temp = {
                 "client_id": id,
                 "docs_type": docs_type,
