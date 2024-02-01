@@ -428,19 +428,25 @@ const getOrder = async (id) => {
 
 exports.updateEnqForm = async (req, res) => {
     try {
-        const { enq_form } = req.body
-        // var update_form = await Enquiry_form.update(
-        //     enq_form,
-        //     {
-        //         where: {
-        //             client_id: enq_form.client_id,
-        //             id: enq_form.id,
-        //             investor_form_type: enq_form.investor_form_type
-        //         }
-        //     }
-        // )
 
-        var update_form = await Enquiry_form.create(enq_form)
+        const { enq_form } = req.body
+        console.log(enq_form.isDraft)
+        if (enq_form.isDraft & enq_form.id != null) {
+
+            var update_form = await Enquiry_form.update(
+                enq_form,
+                {
+                    where: {
+                        client_id: enq_form.client_id,
+                        id: enq_form.id,
+                        investor_form_type: enq_form.investor_form_type
+                    }
+                }
+            )
+        } else {
+            var update_form = await Enquiry_form.create(enq_form)
+
+        }
         if (enq_form.isDraft != true) {
             if (enq_form.investor_form_type === "Individual") {
                 console.log("2")
