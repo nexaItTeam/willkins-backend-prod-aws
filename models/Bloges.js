@@ -41,6 +41,18 @@ module.exports = (sequelize, DataTypes) => {
         like: {
             type: DataTypes.STRING,
             field: "like"
+        },
+        pagemeta_name: {
+            type: DataTypes.STRING,
+            field: "pagemeta_name"
+        },
+        page_title: {
+            type: DataTypes.STRING,
+            field: "page_title"
+        },
+        pagemeta_desc: {
+            type: DataTypes.STRING,
+            field: "pagemeta_desc"
         }
     }, {
         sequelize,
