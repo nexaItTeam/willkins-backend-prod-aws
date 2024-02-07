@@ -165,7 +165,11 @@ exports.addEnqForm = async (req, res) => {
                 if (enq_form.isDraft != true) {
                     // create clients
                     if (enq_form.investor_form_type === "Individual" && req.body.enq_form.clients.length != 0) {
-
+                        //generate unique order id for all
+                        const uniqueorder_id = generateUniqueId({
+                            length: 8,
+                            useLetters: false
+                        })
                         const emails = []
                         await enq_form.clients.forEach(data => {
                             emails.push(data)
@@ -199,14 +203,15 @@ exports.addEnqForm = async (req, res) => {
                             await multipleAccount(emails).then(async () => {
                                 let order_payload = []
                                 resp.forEach(data => {
-                                    const order_id = generateUniqueId({
-                                        length: 8,
-                                        useLetters: false
-                                    })
+                                    // const order_id = generateUniqueId({
+                                    //     length: 8,
+                                    //     useLetters: false
+                                    // })
+                                    
                                     var temp = {
                                         investment_unit: enq_form.investment_unit,
                                         client_id: data.id,
-                                        order_id: enq_form.prop_id + order_id,
+                                        order_id: enq_form.prop_id + uniqueorder_id,
                                         holder_type: "joint",
                                         enq_form_id: enq_form.id || enq_resp.id,
                                         prop_id: enq_form.prop_id,
@@ -215,16 +220,17 @@ exports.addEnqForm = async (req, res) => {
                                         paidStatus: enq_form.paidStatus
                                     }
                                     order_payload.push(temp)
+                                    console.log(order_payload, 'order id2')
                                 })
-                                const order_id = generateUniqueId({
-                                    length: 8,
-                                    useLetters: false
-                                })
+                                // const order_id = generateUniqueId({
+                                //     length: 8,
+                                //     useLetters: false
+                                // })
                                 const main_holder = {
                                     investment_unit: enq_form.investment_unit,
                                     client_id: enq_form.client_id,
                                     holder_type: "self",
-                                    order_id: enq_form.prop_id + order_id,
+                                    order_id: enq_form.prop_id + uniqueorder_id,
                                     enq_form_id: enq_form.id || enq_resp.id,
                                     prop_id: enq_form.prop_id,
                                     paidStatus: enq_form.paidStatus,
@@ -249,7 +255,7 @@ exports.addEnqForm = async (req, res) => {
                                             investment_unit: enq_form.investment_unit,
                                             client_id: client.id,
                                             holder_type: "joint",
-                                            order_id: enq_form.prop_id + order_id,
+                                            order_id: enq_form.prop_id + uniqueorder_id,
                                             enq_form_id: enq_form.id || enq_resp.id,
                                             prop_id: enq_form.prop_id,
                                             paidStatus: enq_form.paidStatus,
@@ -259,6 +265,7 @@ exports.addEnqForm = async (req, res) => {
                                         order_payload.push(joint_holder)
                                     }
                                 }
+                                console.log(order_payload, 'herecreating')
                                 // order create
                                 await Order.bulkCreate(order_payload).then(async (resp) => {
                                     console.log(resp)
