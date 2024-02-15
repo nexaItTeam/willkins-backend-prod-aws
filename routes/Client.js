@@ -14,5 +14,7 @@ router.post('/send-otp', clientController.sendOtp)
 router.post('/verify-otp', clientController.verifyOtp)
 router.post('/forgot-password', clientController.forgotPassword)
 router.post('/change-password', verify.validateToken, clientController.changePassword)
+router.post('/create-sign', clientController.createSign)
+router.post('/get-sign', clientController.getSign)
 
 module.exports = router

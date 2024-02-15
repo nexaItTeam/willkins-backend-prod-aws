@@ -1,4 +1,4 @@
-const { Client, Users, Password_reset } = require('../models')
+const { Client, Users, Password_reset, UserSign } = require('../models')
 const bcrypt = require("bcrypt")
 const { createTokens } = require("../middleware/JWT")
 // const ShortUniqueId = require('short-unique-id');
@@ -77,14 +77,14 @@ exports.createClients = async (req, res) => {
         }
         //  console.log(emails)
         var payload = []
-       
+
         for await (let email of emails) {
             console.log("2", email)
             const id = generateUniqueId({
                 length: 6,
                 useLetters: false
             });
-           await bcrypt.hash(email.password, 10).then((hash) => {
+            await bcrypt.hash(email.password, 10).then((hash) => {
                 var temp = {
                     full_name: email.full_name,
                     password: hash,
@@ -97,19 +97,19 @@ exports.createClients = async (req, res) => {
         }
 
         await Client.bulkCreate(payload).then(async (resp) => {
-             await multipleAccount(emails).then(() => {
+            await multipleAccount(emails).then(() => {
                 console.log(resp)
-                 return res.status(200).json({
+                return res.status(200).json({
                     message: "Success",
                     resp
                 })
-             })
+            })
         }).catch((err) => {
             console.log(err)
-             return res.status(400).json({
-                 message: "Success",
-                 err
-             })
+            return res.status(400).json({
+                message: "Success",
+                err
+            })
         })
     } catch (error) {
         console.log(error)
@@ -183,24 +183,24 @@ exports.clientLogin = async (req, res) => {
 exports.getClient = async (req, res) => {
     try {
         console.log(req.body.id)
-       if(req.body.id == null){
-        var getClient = await Client.findAndCountAll({
-            where: {
-                isDelete: false,
-                active: req.body.active
-            },
-            order: [['createdAt', 'DESC']],
-            limit: req.body.limit,
-            offset: req.body.offset
-        })
-    }else{
-        var getClient = await Client.findOne({
-            where: {
-                id: req.body.id,
-                client_email:req.body.client_email
-            }
-        })
-    }
+        if (req.body.id == null) {
+            var getClient = await Client.findAndCountAll({
+                where: {
+                    isDelete: false,
+                    active: req.body.active
+                },
+                order: [['createdAt', 'DESC']],
+                limit: req.body.limit,
+                offset: req.body.offset
+            })
+        } else {
+            var getClient = await Client.findOne({
+                where: {
+                    id: req.body.id,
+                    client_email: req.body.client_email
+                }
+            })
+        }
         if (!getClient) {
             return res.status(404).json({
                 message: "Something went wrong"
@@ -446,6 +446,66 @@ exports.changePassword = async (req, res) => {
         })
     } catch (error) {
         return res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
+
+exports.createSign = async (req, res) => {
+    try {
+        const { signiture } = req.body
+        var get_Sign = await UserSign.findOne(
+            {
+                where: { signiture: signiture.signiture }
+            })
+        if (!get_Sign) {
+            var createSign = await UserSign.create(signiture)
+            if (!createSign) {
+                return res.status(400).json({
+                    message: "failed to create"
+                })
+            } else {
+                return res.status(200).json({
+                    message: "created",
+                    createSign
+                })
+            }
+        } else {
+            return res.status(200).json({
+                message: "signature already exist"
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
+
+exports.getSign = async (req, res) => {
+    try {
+        const { signiture } = req.body
+        var get_Sign = await UserSign.findOne(
+            {
+                where: { signiture: signiture.signiture }
+            })
+        if (!get_Sign) {
+            return res.status(200).json({
+                message: "signature not found."
+            })
+        } else {
+            return res.status(200).json({
+                message: "Success",
+                get_Sign
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
             message: "Server Error",
             error
         })
