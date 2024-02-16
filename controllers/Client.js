@@ -472,14 +472,9 @@ exports.createSign = async (req, res) => {
                 })
             }
         } else {
-            var createSign = await UserSign.update(signiture, {
-                where: {
-                    id: signiture.signiture
-                }
-            })
+
             return res.status(200).send({
-                message: "update sign",
-                createSign
+                message: "sign already exist",
             })
         }
 
