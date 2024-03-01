@@ -17,7 +17,8 @@ exports.getAllOrder = async (req, res) => {
         if (req.body.client_id != null && req.body.prop_id == null) {
             getOrder = await Order.findAll({
                 where: {
-                    client_id: req.body.client_id
+                    client_id: req.body.client_id,
+                    paidStatus: [0, 1, 2, 4]
                 },
 
                 include: [
@@ -41,6 +42,7 @@ exports.getAllOrder = async (req, res) => {
                 where: {
                     client_id: req.body.client_id,
                     prop_id: req.body.prop_id,
+                    paidStatus: [0, 1, 2, 4]
                 },
                 include: [
                     {
@@ -60,6 +62,9 @@ exports.getAllOrder = async (req, res) => {
             })
         } else {
             getOrder = await Order.findAll({
+                where: {
+                    paidStatus: [0, 1, 2, 4]
+                },
                 include: [
                     {
                         model: model.Property,
@@ -207,7 +212,7 @@ exports.addEnqForm = async (req, res) => {
                                     //     length: 8,
                                     //     useLetters: false
                                     // })
-                                    
+
                                     var temp = {
                                         investment_unit: enq_form.investment_unit,
                                         client_id: data.id,
