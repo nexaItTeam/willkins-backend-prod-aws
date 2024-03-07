@@ -48,7 +48,7 @@ exports.addEnquery = async (req, res) => {
       console.log("hello");
       return res.status(400).json({
         message:
-          "Your email id is already exist please kindly login to our client portal",
+          "Your email address is already registered in our client portal,kindly log in to the portal",
       });
     } else {
       var create_enq = await Enquery.create(enquery);
