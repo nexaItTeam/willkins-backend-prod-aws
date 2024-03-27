@@ -428,30 +428,34 @@ exports.getAllPropertyMobile = async (req, res) => {
       },
     });
 
-    // Create a map of property IDs to their images
-    const propertyImagesMap = {};
-    images.forEach((img) => {
-      if (!propertyImagesMap[img.prop_id]) {
-        propertyImagesMap[img.prop_id] = [];
-      }
-      propertyImagesMap[img.prop_id].push(img.property_img);
-    });
+    // Create a new array to store updated properties
+    const updatedProperties = [];
 
-    // Create a new array with updated properties
-    const updatedProperties = properties.map((property) => {
-      const updatedProperty = { ...property }; // Copy the property object to avoid mutating the original
-      const propertyId = updatedProperty.id;
-      if (propertyImagesMap[propertyId]) {
-        updatedProperty.property_img = propertyImagesMap[propertyId];
-      } else {
-        updatedProperty.property_img = []; // If no images found, set property_img to an empty array
-      }
-      return updatedProperty;
-    });
+    for (let i = 0; i < properties.length; i++) {
+      const propertyId = properties[i].id;
+      const propertyImages = images.filter(img => img.prop_id === propertyId);
+      
+      // Create a new object for the property without the previous value section
+      const updatedProperty = {
+        ...properties[i].dataValues, // Copy the property object
+        images: propertyImages.map(img =>"https://wellkinsstorageprod.blob.core.windows.net/" +img.property_img) // Add images property
+      };
+
+      // Update specified keys by prepending the URL if the value is not null
+      const keysToUpdate = ["pds", "spds", "tdm", "fsg"];
+      keysToUpdate.forEach(key => {
+        if (updatedProperty[key] !== null && updatedProperty[key] !== undefined) {
+          updatedProperty[key] = `https://wellkinsstorageprod.blob.core.windows.net/${key}/${updatedProperty[key]}`;
+        }
+      });
+
+      // Push the updated property object to the new array
+      updatedProperties.push(updatedProperty);
+    }
 
     return res.status(200).send({
-      message: "Prop IMG",
-      getProperty: updatedProperties,
+      message: "Property Images",
+      updatedProperties,
     });
   } catch (error) {
     console.log(error);
@@ -462,44 +466,3 @@ exports.getAllPropertyMobile = async (req, res) => {
   }
 };
 
-// exports.getAllPropertyMobile = async (req, res) => {
-//   try {
-//     var image = await PropertyIMG.findAll();
-//     console.log(image);
-//     var getProperty = await Property.findAll({
-//       where: {
-//         isDelete: false,
-//       },
-//     });
-
-//     const imagesByPropId = {};
-//     // image.forEach((image) => {
-//     //   const { prop_id } = image;
-//     //   if (!imagesByPropId[prop_id]) {
-//     //     imagesByPropId[prop_id] = []; // Initialize array if not already created
-//     //   }
-//     //   imagesByPropId[prop_id].push(image);
-//     // });
-//     await image.forEach((obj2) => {
-//       const matchingObjIndex = getProperty.findIndex(
-//         (obj1) => obj1.id === obj2.prop_id
-//       );
-//       console.log(matchingObjIndex);
-//       if (matchingObjIndex !== -1) {
-//         console.log("here");
-//         getProperty[matchingObjIndex].property_img = obj2.property_img;
-//       }
-//     });
-//     return res.status(200).send({
-//       message: "Prop IMG",
-//       image,
-//       getProperty,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       message: "Server Error",
-//       error,
-//     });
-//   }
-// };
